@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karta pracy — Mistrz obrazów</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #F58220;
+    --orange-light: #FEF3E7;
+    --purple: #6F499D;
+    --purple-light: #F0ECF5;
+    --paper: #FDFCFA;
+    --ink: #3A3A3A;
+    --ink-light: #7A7A7A;
+    --grid: #E8E4DE;
+    --dashed: #C4BFB6;
+    --line-height: 28px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  @page {
+    size: A4;
+    margin: 14mm 16mm 18mm 16mm;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    background: #E8E4DE;
+    line-height: 1.55;
+    font-size: 13px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    background: var(--paper);
+    margin: 12px auto;
+    padding: 14mm 16mm 18mm 16mm;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+  }
+
+  .page::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: var(--line-height) var(--line-height);
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page > * { position: relative; z-index: 1; }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    border-bottom: 2.5px solid var(--orange);
+    padding-bottom: 10px;
+    margin-bottom: 18px;
+  }
+
+  .header-left h1 {
+    font-family: 'Caveat', cursive;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--orange);
+    line-height: 1.1;
+  }
+
+  .header-left .subtitle {
+    font-size: 12px;
+    color: var(--ink-light);
+    margin-top: 2px;
+  }
+
+  .header-right {
+    text-align: right;
+    font-size: 11.5px;
+    color: var(--ink-light);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-end;
+  }
+
+  .header-right label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .field-input {
+    border: none;
+    border-bottom: 1.5px dashed var(--dashed);
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--ink);
+    outline: none;
+    min-width: 150px;
+    padding: 2px 4px;
+    line-height: 1.4;
+  }
+
+  .field-input-date {
+    min-width: 100px;
+  }
+
+  /* Etap labels */
+  .etap-tag {
+    display: inline-block;
+    font-family: 'Caveat', cursive;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--purple);
+    margin-bottom: 6px;
+    padding-bottom: 2px;
+    border-bottom: 2px solid var(--purple);
+  }
+
+  .etap-title {
+    font-family: 'Caveat', cursive;
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+
+  /* Element rows */
+  .element-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 0;
+    margin-bottom: 10px;
+    align-items: start;
+  }
+
+  .element-label {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--orange);
+    padding-top: 2px;
+  }
+
+  .element-body {
+    border-left: 2px solid var(--orange-light);
+    padding-left: 10px;
+  }
+
+  .element-hint {
+    font-size: 11px;
+    color: var(--ink-light);
+    font-style: italic;
+    line-height: 1.4;
+    margin-bottom: 4px;
+  }
+
+  .write-line {
+    width: 100%;
+    height: 26px;
+    border: none;
+    border-bottom: 1.5px dashed var(--dashed);
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    outline: none;
+  }
+
+  /* Prompt box */
+  .prompt-box {
+    margin-top: 16px;
+    border: 2px dashed var(--orange);
+    border-radius: 6px;
+    padding: 10px 14px;
+    background: rgba(245,130,32,0.03);
+  }
+
+  .prompt-box-label {
+    font-family: 'Caveat', cursive;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--orange);
+    margin-bottom: 4px;
+  }
+
+  .prompt-box textarea {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+    color: var(--ink);
+    resize: none;
+    outline: none;
+    line-height: var(--line-height);
+    background-image: linear-gradient(transparent calc(var(--line-height) - 1px), var(--grid) var(--line-height));
+    background-size: 100% var(--line-height);
+  }
+
+  .prompt-7 { min-height: 196px; }
+
+  /* Info box */
+  .info-box {
+    background: var(--purple-light);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-top: 6px;
+  }
+
+  .info-title {
+    font-family: 'Caveat', cursive;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--purple);
+    margin-bottom: 6px;
+  }
+
+  .format-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 20px;
+  }
+
+  .format-item {
+    font-size: 11.5px;
+    line-height: 1.5;
+    padding: 2px 0;
+  }
+
+  .format-item strong {
+    color: var(--purple);
+    font-weight: 600;
+  }
+
+  .resolution-note {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--ink-light);
+    border-top: 1px solid var(--dashed);
+    padding-top: 6px;
+  }
+
+  /* Image grids */
+  .image-grid-4 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 10px;
+  }
+
+  .image-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin-top: 10px;
+  }
+
+  /* Upload slot */
+  .upload-wrapper { display: flex; flex-direction: column; }
+
+  .slot-heading {
+    font-family: 'Caveat', cursive;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+    padding-left: 2px;
+  }
+
+  .upload-slot {
+    border: 2px dashed var(--dashed);
+    border-radius: 6px;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.5);
+    position: relative;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    overflow: hidden;
+  }
+
+  .upload-slot:hover {
+    border-color: var(--orange);
+    background: rgba(245,130,32,0.04);
+  }
+
+  .upload-slot .placeholder-text {
+    font-size: 11px;
+    color: var(--dashed);
+    text-align: center;
+    line-height: 1.4;
+    pointer-events: none;
+  }
+
+  .upload-slot .placeholder-plus {
+    font-size: 28px;
+    color: var(--dashed);
+    line-height: 1;
+    margin-bottom: 2px;
+    pointer-events: none;
+  }
+
+  .upload-slot img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 4px;
+    background: #f5f3ef;
+  }
+
+  .upload-slot input[type="file"] { display: none; }
+
+  .note-input {
+    width: 100%;
+    margin-top: 5px;
+    padding: 4px 6px;
+    border: none;
+    border-bottom: 1.5px dashed var(--dashed);
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    color: var(--ink);
+    outline: none;
+  }
+
+  .note-input::placeholder { color: var(--dashed); }
+
+  /* Comparison */
+  .comparison-prompt {
+    margin-top: 8px;
+    border: 2px dashed var(--purple);
+    border-radius: 6px;
+    padding: 10px 14px;
+    background: rgba(111,73,157,0.02);
+  }
+
+  .comparison-prompt textarea {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+    color: var(--ink);
+    resize: none;
+    outline: none;
+    line-height: var(--line-height);
+    min-height: 56px;
+    background-image: linear-gradient(transparent calc(var(--line-height) - 1px), var(--grid) var(--line-height));
+    background-size: 100% var(--line-height);
+  }
+
+  .tool-label {
+    font-family: 'Caveat', cursive;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    padding-left: 2px;
+  }
+
+  .tool-chatgpt { color: #10a37f; }
+  .tool-canva { color: #7d2ae8; }
+  .tool-gemini { color: #4285f4; }
+
+  /* Comparison vertical stack (Etap 4) */
+  .comparison-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .comparison-row {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 0 10px;
+    align-items: start;
+  }
+
+  .comparison-row .tool-label {
+    padding-top: 10px;
+  }
+
+  .comparison-row .upload-slot {
+    aspect-ratio: 16 / 7;
+  }
+
+  .comparison-row .note-input {
+    grid-column: 2;
+  }
+
+  /* Series slots */
+  .series-slot {
+    border: 2.5px dashed var(--orange);
+    border-radius: 8px;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(245,130,32,0.02);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .series-slot:hover {
+    background: rgba(245,130,32,0.06);
+  }
+
+  .series-slot .placeholder-plus {
+    font-size: 28px;
+    color: var(--orange);
+    opacity: 0.3;
+    line-height: 1;
+    margin-bottom: 2px;
+    pointer-events: none;
+  }
+
+  .series-slot .placeholder-text {
+    font-size: 11px;
+    color: var(--orange);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .series-slot img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 6px;
+    background: #fdf8f2;
+  }
+
+  .series-slot input[type="file"] { display: none; }
+
+  /* Footer */
+  .page-footer {
+    position: absolute;
+    bottom: 14mm;
+    left: 16mm;
+    right: 16mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-size: 10px;
+    color: var(--ink-light);
+    z-index: 2;
+  }
+
+  .page-footer .brand {
+    font-weight: 600;
+    color: var(--orange);
+  }
+
+  .spacer-sm { height: 8px; }
+  .spacer-md { height: 16px; }
+
+  /* Print */
+  @media print {
+    body { background: white; }
+    .page {
+      width: auto;
+      min-height: auto;
+      margin: 0;
+      padding: 0;
+      box-shadow: none;
+      page-break-after: always;
+      page-break-inside: avoid;
+    }
+    .page:last-child { page-break-after: auto; }
+    .page::before { opacity: 0.25; }
+    .no-print { display: none !important; }
+    .upload-slot .placeholder-text,
+    .upload-slot .placeholder-plus,
+    .series-slot .placeholder-text,
+    .series-slot .placeholder-plus { opacity: 0.15; }
+  }
+
+  /* Print button */
+  .print-bar {
+    text-align: center;
+    padding: 16px;
+    background: #E8E4DE;
+  }
+
+  .print-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 32px;
+    border: none;
+    border-radius: 8px;
+    background: var(--orange);
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .print-btn:hover { background: #e0740d; }
+</style>
+</head>
+<body>
+
+
+
+<!-- ========== PAGE 1 ========== -->
+<div class="page">
+
+  <div class="header">
+    <div class="header-left">
+      <h1>Mistrz obrazów</h1>
+      <div class="subtitle">Karta pracy · Kurs AI 10–12 · Lekcja 3</div>
+    </div>
+    <div class="header-right">
+      <label>Imię: <input type="text" class="field-input" placeholder=""></label>
+      <label>Data: <input type="text" class="field-input field-input-date" placeholder=""></label>
+    </div>
+  </div>
+
+  <div class="etap-tag">Etap 1</div>
+  <div class="etap-title">5 elementów dobrego promptu graficznego</div>
+
+  <div class="element-row">
+    <div class="element-label">Temat</div>
+    <div class="element-body">
+      <div class="element-hint">Co ma być na obrazie? Nie wystarczy „kot" — lepiej: „rudy kot siedzący na parapecie".</div>
+      <input type="text" class="write-line">
+    </div>
+  </div>
+
+  <div class="element-row">
+    <div class="element-label">Styl</div>
+    <div class="element-body">
+      <div class="element-hint">Jak obraz ma wyglądać? Realistyczny, komiksowy, akwarelowy, pixel art, cyberpunk...</div>
+      <input type="text" class="write-line">
+    </div>
+  </div>
+
+  <div class="element-row">
+    <div class="element-label">Światło</div>
+    <div class="element-body">
+      <div class="element-hint">Skąd pada i jaką ma barwę? Ciepły zachód słońca, chłodny neon, miękki poranek...</div>
+      <input type="text" class="write-line">
+    </div>
+  </div>
+
+  <div class="element-row">
+    <div class="element-label">Kadr</div>
+    <div class="element-body">
+      <div class="element-hint">Jak blisko jest „kamera"? Zbliżenie = portret. Z lotu ptaka = panorama.</div>
+      <input type="text" class="write-line">
+    </div>
+  </div>
+
+  <div class="element-row">
+    <div class="element-label">Klimat</div>
+    <div class="element-body">
+      <div class="element-hint">Jakie uczucie ma wywołać? Tajemniczy, radosny, dramatyczny, spokojny...</div>
+      <input type="text" class="write-line">
+    </div>
+  </div>
+
+  <div class="prompt-box">
+    <div class="prompt-box-label">Twój gotowy prompt</div>
+    <textarea class="prompt-7" rows="7" placeholder="Wklej tutaj prompt wygenerowany przez ChatGPT..."></textarea>
+  </div>
+
+  <div class="spacer-md"></div>
+
+  <div class="etap-tag">Etap 2</div>
+  <div class="etap-title">Formaty plików graficznych — ściągawka</div>
+
+  <div class="info-box">
+    <div class="format-grid">
+      <div class="format-item"><strong>PNG</strong> — najlepsza jakość i przezroczystość, duży plik</div>
+      <div class="format-item"><strong>JPEG</strong> — mniejszy plik, lekka utrata ostrości, świetny do udostępniania</div>
+      <div class="format-item"><strong>SVG</strong> — grafika wektorowa, powiększasz bez utraty jakości</div>
+      <div class="format-item"><strong>WebP</strong> — dobra jakość + mały rozmiar w jednym</div>
+    </div>
+    <div class="resolution-note">
+      <strong>Rozdzielczość</strong> = liczba pikseli w obrazie. Więcej pikseli = ostrzejszy obraz, większy plik. Standardowy obraz z ChatGPT: 1024 x 1024 px.
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span class="brand">Giganci Programowania</span>
+    <span>Strona 1 / 4</span>
+  </div>
+</div>
+
+<!-- ========== PAGE 2 — ETAP 3 ========== -->
+<div class="page">
+
+  <div class="header" style="border-bottom-color: var(--purple);">
+    <div class="header-left">
+      <h1 style="color: var(--purple);">Pierwsza seria</h1>
+      <div class="subtitle">Plakat · Scena · Portret · Detal</div>
+    </div>
+  </div>
+
+  <div class="etap-tag">Etap 3</div>
+  <div class="etap-title">Moje 4 obrazy z ChatGPT — wklej wygenerowane grafiki</div>
+
+  <div class="image-grid-4">
+    <div class="upload-wrapper">
+      <div class="slot-heading">1. Pierwsza generacja</div>
+      <div class="upload-slot" onclick="this.querySelector('input').click()">
+        <div class="placeholder-plus">+</div>
+        <div class="placeholder-text">Kliknij, aby dodać obraz</div>
+        <input type="file" accept="image/*" onchange="handleUpload(this)">
+      </div>
+    </div>
+    <div class="upload-wrapper">
+      <div class="slot-heading">2. Scena</div>
+      <div class="upload-slot" onclick="this.querySelector('input').click()">
+        <div class="placeholder-plus">+</div>
+        <div class="placeholder-text">Kliknij, aby dodać obraz</div>
+        <input type="file" accept="image/*" onchange="handleUpload(this)">
+      </div>
+    </div>
+    <div class="upload-wrapper">
+      <div class="slot-heading">3. Portret</div>
+      <div class="upload-slot" onclick="this.querySelector('input').click()">
+        <div class="placeholder-plus">+</div>
+        <div class="placeholder-text">Kliknij, aby dodać obraz</div>
+        <input type="file" accept="image/*" onchange="handleUpload(this)">
+      </div>
+    </div>
+    <div class="upload-wrapper">
+      <div class="slot-heading">4. Detal</div>
+      <div class="upload-slot" onclick="this.querySelector('input').click()">
+        <div class="placeholder-plus">+</div>
+        <div class="placeholder-text">Kliknij, aby dodać obraz</div>
+        <input type="file" accept="image/*" onchange="handleUpload(this)">
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span class="brand">Giganci Programowania</span>
+    <span>Strona 2 / 4</span>
+  </div>
+</div>
+
+<!-- ========== PAGE 3 — ETAP 4 ========== -->
+<div class="page">
+
+  <div class="header">
+    <div class="header-left">
+      <h1>Porównanie narzędzi</h1>
+      <div class="subtitle">Ten sam prompt w trzech różnych narzędziach AI</div>
+    </div>
+  </div>
+
+  <div class="etap-tag">Etap 4</div>
+  <div class="etap-title">Ten sam prompt, trzy narzędzia</div>
+
+  <div class="comparison-prompt">
+    <div class="prompt-box-label" style="color: var(--purple);">Prompt użyty do porównania</div>
+    <textarea rows="2" placeholder="Wklej prompt, którego użyłeś/aś we wszystkich trzech narzędziach..."></textarea>
+  </div>
+
+  <div class="spacer-sm"></div>
+
+  <div class="comparison-stack">
+    <div class="comparison-row">
+      <div class="tool-label tool-chatgpt">ChatGPT</div>
+      <div class="upload-slot" onclick="this.querySelector('input').click()">
+        <div class="placeholder-plus">+</div>
+        <div class="placeholder-text">Kliknij, aby dodać obraz</div>
+        <input type="file" accept="image/*" onchange="handleUpload(this)">
+      </div>
+      <input type="text" class="note-input" placeholder="Uwagi...">
+    </div>
+    <div class="comparison-row">
+      <div class="tool-label tool-canva">Canva</div>
+      <div class="upload-slot" onclick="this.querySelector('input').click()">
+        <div class="placeholder-plus">+</div>
+        <div class="placeholder-text">Kliknij, aby dodać obraz</div>
+        <input type="file" accept="image/*" onchange="handleUpload(this)">
+      </div>
+      <input type="text" class="note-input" placeholder="Uwagi...">
+    </div>
+    <div class="comparison-row">
+      <div class="tool-label tool-gemini">Gemini</div>
+      <div class="upload-slot" onclick="this.querySelector('input').click()">
+        <div class="placeholder-plus">+</div>
+        <div class="placeholder-text">Kliknij, aby dodać obraz</div>
+        <input type="file" accept="image/*" onchange="handleUpload(this)">
+      </div>
+      <input type="text" class="note-input" placeholder="Uwagi...">
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span class="brand">Giganci Programowania</span>
+    <span>Strona 3 / 4</span>
+  </div>
+</div>
+
+<!-- ========== PAGE 4 — ETAP 5 ========== -->
+<div class="page">
+
+  <div class="header">
+    <div class="header-left">
+      <h1>Moja seria AI</h1>
+      <div class="subtitle">Twoja autorska kolekcja obrazów</div>
+    </div>
+  </div>
+
+  <div class="etap-tag">Etap 5</div>
+  <div class="etap-title">Twoja seria — wklej swoje najlepsze prace</div>
+
+  <div class="image-grid-4" style="gap: 14px;">
+    <div class="upload-wrapper">
+      <div class="slot-heading">Obraz 1</div>
+      <div class="series-slot" onclick="this.querySelector('input').click()">
+        <div class="placeholder-plus">+</div>
+        <div class="placeholder-text">Kliknij, aby dodać</div>
+        <input type="file" accept="image/*" onchange="handleUploadSeries(this)">
+      </div>
+      <input type="text" class="note-input" placeholder="Uwagi...">
+    </div>
+    <div class="upload-wrapper">
+      <div class="slot-heading">Obraz 2</div>
+      <div class="series-slot" onclick="this.querySelector('input').click()">
+        <div class="placeholder-plus">+</div>
+        <div class="placeholder-text">Kliknij, aby dodać</div>
+        <input type="file" accept="image/*" onchange="handleUploadSeries(this)">
+      </div>
+      <input type="text" class="note-input" placeholder="Uwagi...">
+    </div>
+    <div class="upload-wrapper">
+      <div class="slot-heading">Obraz 3</div>
+      <div class="series-slot" onclick="this.querySelector('input').click()">
+        <div class="placeholder-plus">+</div>
+        <div class="placeholder-text">Kliknij, aby dodać</div>
+        <input type="file" accept="image/*" onchange="handleUploadSeries(this)">
+      </div>
+      <input type="text" class="note-input" placeholder="Uwagi...">
+    </div>
+    <div class="upload-wrapper">
+      <div class="slot-heading">Obraz 4</div>
+      <div class="series-slot" onclick="this.querySelector('input').click()">
+        <div class="placeholder-plus">+</div>
+        <div class="placeholder-text">Kliknij, aby dodać</div>
+        <input type="file" accept="image/*" onchange="handleUploadSeries(this)">
+      </div>
+      <input type="text" class="note-input" placeholder="Uwagi...">
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span class="brand">Giganci Programowania</span>
+    <span>Strona 4 / 4</span>
+  </div>
+</div>
+
+<div class="print-bar no-print" style="padding-bottom: 40px;">
+  <button class="print-btn" id="printBtnBottom">Drukuj / Zapisz PDF</button>
+  <p style="font-size:11px; color:#7A7A7A; margin-top:6px; font-family:'DM Sans',sans-serif;">Jeśli przycisk nie działa, pobierz plik i otwórz go w przeglądarce, a następnie użyj Ctrl+P</p>
+</div>
+
+<script>
+// Print
+function doPrint() {
+  try {
+    window.print();
+  } catch(e) {
+    alert('Aby wydrukować lub zapisać PDF, otwórz ten plik bezpośrednio w przeglądarce (Ctrl+P).');
+  }
+}
+document.getElementById('printBtnBottom').addEventListener('click', doPrint);
+
+// Upload handlers
+function handleUpload(input) {
+  if (!input.files || !input.files[0]) return;
+  var file = input.files[0];
+  var reader = new FileReader();
+  var slot = input.closest('.upload-slot');
+  reader.onload = function(e) {
+    var plus = slot.querySelector('.placeholder-plus');
+    var text = slot.querySelector('.placeholder-text');
+    if (plus) plus.style.display = 'none';
+    if (text) text.style.display = 'none';
+    var old = slot.querySelector('img');
+    if (old) old.remove();
+    var img = document.createElement('img');
+    img.src = e.target.result;
+    slot.appendChild(img);
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleUploadSeries(input) {
+  if (!input.files || !input.files[0]) return;
+  var file = input.files[0];
+  var reader = new FileReader();
+  var slot = input.closest('.series-slot');
+  reader.onload = function(e) {
+    var plus = slot.querySelector('.placeholder-plus');
+    var text = slot.querySelector('.placeholder-text');
+    if (plus) plus.style.display = 'none';
+    if (text) text.style.display = 'none';
+    var old = slot.querySelector('img');
+    if (old) old.remove();
+    var img = document.createElement('img');
+    img.src = e.target.result;
+    slot.appendChild(img);
+  };
+  reader.readAsDataURL(file);
+}
+</script>
+
+</body>
+</html>
