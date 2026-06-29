@@ -773,75 +773,18 @@
     }
   }
 
-  // ── Structure per page type ──
-  const structures = {
-    'Landing page':
-      '- hero z mocnym nagłówkiem i przyciskiem CTA,\n' +
-      '- sekcja korzyści (3–4 punkty z ikonami),\n' +
-      '- opis oferty ze zdjęciem lub grafiką,\n' +
-      '- opinie użytkowników / social proof,\n' +
-      '- końcowe CTA z przyciskiem,\n' +
-      '- stopka z linkami i kontaktem.',
-    'Portfolio / CV online':
-      '- hero z imieniem, rolą i krótkim bio,\n' +
-      '- sekcja "o mnie",\n' +
-      '- galeria projektów (karty ze zdjęciami i opisami),\n' +
-      '- lista umiejętności,\n' +
-      '- formularz kontaktowy,\n' +
-      '- stopka z linkami do social media.',
-    'Strona produktu':
-      '- hero z nazwą produktu, grafiką i przyciskiem CTA,\n' +
-      '- sekcja cech / funkcji produktu,\n' +
-      '- galeria zdjęć produktu,\n' +
-      '- opinie klientów,\n' +
-      '- sekcja FAQ,\n' +
-      '- CTA z ceną i przyciskiem zakupu,\n' +
-      '- stopka.',
-    'Sklep internetowy':
-      '- hero z aktualną promocją lub banerem,\n' +
-      '- kategorie produktów,\n' +
-      '- siatka produktów (zdjęcie, nazwa, cena, przycisk),\n' +
-      '- wyróżnione oferty / bestsellery,\n' +
-      '- sekcja newsletter,\n' +
-      '- stopka z informacjami i linkami.',
-    'Blog / serwis informacyjny':
-      '- hero z wyróżnionym artykułem,\n' +
-      '- siatka najnowszych wpisów (miniaturka, tytuł, data),\n' +
-      '- kategorie / tagi,\n' +
-      '- sekcja "popularne artykuły",\n' +
-      '- zapis do newslettera,\n' +
-      '- stopka.',
-    'Strona społeczności / wydarzenia':
-      '- hero z nazwą wydarzenia, datą i miejscem,\n' +
-      '- program / agenda,\n' +
-      '- sekcja prelegentów lub organizatorów,\n' +
-      '- formularz rejestracji / zapisy,\n' +
-      '- sekcja FAQ,\n' +
-      '- stopka z kontaktem i mapą.'
-  };
-
-  function getStructure(type) {
-    if (structures[type]) return structures[type];
-    return '- sekcja główna z nagłówkiem,\n' +
-      '- opis projektu i najważniejsze informacje,\n' +
-      '- grafiki lub miejsca na grafiki,\n' +
-      '- przyciski akcji,\n' +
-      '- sekcja kontaktowa,\n' +
-      '- stopka.';
-  }
-
   // ── Prompt generation ──
   function generatePrompt() {
-    const palette = state.colors.join(', ');
-    const structure = getStructure(state.type);
-    const prompt =
-      'Stwórz profesjonalną stronę internetową.\n\n' +
+    var palette = state.colors.join(', ');
+    var prompt =
+      'Stwórz profesjonalną stronę internetową w HTML i CSS.\n\n' +
       'Rodzaj strony:\n' + state.type + '\n\n' +
       'Cel strony:\n' + state.goal + '\n\n' +
       'Grupa odbiorców:\n' + state.audience + '\n\n' +
-      'Struktura strony:\n' + structure + '\n\n' +
       'Styl wizualny:\n' + state.style + '\n\n' +
-      'Kolorystyka:\n' + palette;
+      'Kolorystyka:\n' + palette + '\n\n' +
+      'Wygeneruj cały kod w jednym pliku HTML.\n' +
+      'CSS umieść wewnątrz tagu style.';
 
     document.getElementById('promptText').textContent = prompt;
   }
