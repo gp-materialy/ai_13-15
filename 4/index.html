@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karta Koncepcji Strony</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --orange: #F58220;
+    --orange-light: #FEF3E7;
+    --orange-mid: #F4CAA0;
+    --purple: #6F499D;
+    --purple-light: #F3F0F7;
+    --purple-mid: #D4CFE5;
+    --text: #2D2D2D;
+    --text-secondary: #717171;
+    --bg: #FAFAFA;
+    --card: #FFFFFF;
+    --border: #E8E8E8;
+    --radius: 12px;
+  }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrapper {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+
+  /* Header */
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  header .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--purple);
+    background: var(--purple-light);
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 16px;
+  }
+
+  header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+
+  header p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* Progress */
+  .progress-bar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 36px;
+  }
+
+  .progress-bar .seg {
+    flex: 1;
+    height: 4px;
+    border-radius: 4px;
+    background: var(--border);
+    transition: background 0.4s ease;
+  }
+
+  .progress-bar .seg.done { background: var(--orange); }
+
+  /* Steps */
+  .step {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    margin-bottom: 16px;
+    transition: border-color 0.3s ease;
+  }
+
+  .step:focus-within { border-color: var(--orange-mid); }
+
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+
+  .step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--purple-light);
+    color: var(--purple);
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+  }
+
+  .step-num.done { background: var(--purple); color: #fff; }
+
+  .step-title { font-size: 16px; font-weight: 600; }
+
+  .step-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 4px 0 18px 40px;
+  }
+
+  /* Inputs */
+  textarea, .custom-input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--bg);
+    transition: border-color 0.2s ease;
+    outline: none;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  textarea:focus, .custom-input:focus { border-color: var(--orange); }
+  textarea::placeholder, .custom-input::placeholder { color: #B8B8B8; }
+
+  /* Option cards */
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  @media (max-width: 500px) {
+    .options { grid-template-columns: 1fr; }
+  }
+
+  .opt {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--card);
+    position: relative;
+  }
+
+  .opt:hover { border-color: var(--orange-mid); background: var(--orange-light); }
+  .opt.selected { border-color: var(--orange); background: var(--orange-light); }
+
+  .opt .opt-name { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+  .opt .opt-info { font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
+
+  .opt .check-mark {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--orange);
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .opt.selected .check-mark { display: flex; }
+
+  /* Custom option */
+  .opt-custom { grid-column: 1 / -1; }
+
+  .opt-custom .custom-input {
+    margin-top: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    min-height: 0;
+    background: #fff;
+    display: none;
+  }
+
+  .opt-custom.selected .custom-input { display: block; }
+
+  /* Color palette */
+  .color-input-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .color-input-row input[type="color"] {
+    width: 44px;
+    height: 44px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 2px;
+    background: var(--card);
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .color-input-row input[type="color"]::-webkit-color-swatch-wrapper { padding: 2px; }
+  .color-input-row input[type="color"]::-webkit-color-swatch { border-radius: 6px; border: none; }
+
+  .color-hex {
+    font-family: 'DM Sans', monospace;
+    font-size: 13px;
+    color: var(--text-secondary);
+    min-width: 64px;
+  }
+
+  .color-remove {
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+
+  .color-remove:hover { color: #e74c3c; background: #fef2f2; }
+
+  .add-color-btn {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--purple);
+    background: var(--purple-light);
+    border: 1.5px dashed var(--purple-mid);
+    border-radius: 10px;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+  }
+
+  .add-color-btn:hover { background: var(--purple-mid); color: #fff; }
+
+  .color-presets { margin-top: 14px; }
+
+  .color-presets-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .preset-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .preset-chip {
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 5px 12px;
+    cursor: pointer;
+    background: var(--card);
+    color: var(--text-secondary);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .preset-chip:hover { border-color: var(--orange-mid); color: var(--text); }
+
+  .preset-dots { display: flex; gap: 2px; }
+
+  .preset-dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  /* Prompt output */
+  .prompt-section {
+    margin-top: 36px;
+    opacity: 0.35;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+
+  .prompt-section.ready { opacity: 1; pointer-events: all; }
+
+  .prompt-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .prompt-label .icon-spark {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .prompt-label h2 { font-size: 18px; font-weight: 700; }
+
+  .prompt-incomplete {
+    font-size: 13px;
+    color: var(--text-secondary);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    text-align: center;
+  }
+
+  .prompt-incomplete strong { color: var(--orange); }
+
+  .prompt-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .prompt-text {
+    padding: 24px;
+    font-size: 13px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    color: var(--text);
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .prompt-actions { display: flex; border-top: 1px solid var(--border); }
+
+  .copy-btn {
+    flex: 1;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 14px 20px;
+    border: none;
+    cursor: pointer;
+    background: var(--orange);
+    color: #fff;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .copy-btn:hover { background: #e0740d; }
+  .copy-btn.copied { background: #27ae60; }
+
+  .link-hint {
+    display: block;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--purple);
+    text-decoration: none;
+  }
+
+  .link-hint:hover { text-decoration: underline; }
+
+  @media (max-width: 500px) {
+    .wrapper { padding: 20px 14px 60px; }
+    header h1 { font-size: 22px; }
+    .step { padding: 22px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <header>
+    <div class="badge">Karta koncepcji</div>
+    <h1>Zaprojektuj swoją stronę</h1>
+    <p>Uzupełnij każde pole, a na końcu dostaniesz gotowy prompt do wklejenia w Lovable.</p>
+  </header>
+
+  <div class="progress-bar" id="progressBar">
+    <div class="seg" data-step="1"></div>
+    <div class="seg" data-step="2"></div>
+    <div class="seg" data-step="3"></div>
+    <div class="seg" data-step="4"></div>
+    <div class="seg" data-step="5"></div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num" id="sn1">1</div>
+      <div class="step-title">Cel strony</div>
+    </div>
+    <div class="step-desc">Po co powstaje ta strona? Co użytkownik ma na niej znaleźć?</div>
+    <textarea id="goal" placeholder="np. Strona ma promować naszą grę mobilną i zachęcić do pobrania..."></textarea>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num" id="sn2">2</div>
+      <div class="step-title">Grupa docelowa</div>
+    </div>
+    <div class="step-desc">Kto będzie odwiedzał stronę? Ile ma lat, czym się interesuje?</div>
+    <textarea id="audience" placeholder="np. Młodzież 14-20 lat, gracze mobilni, szukają nowych gier..."></textarea>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num" id="sn3">3</div>
+      <div class="step-title">Rodzaj strony</div>
+    </div>
+    <div class="step-desc">Wybierz typ, który najlepiej pasuje do Twojego pomysłu.</div>
+    <div class="options" id="typeOptions">
+      <div class="opt" data-value="Landing page">
+        <div class="check-mark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="opt-name">Landing page</div>
+        <div class="opt-info">Jeden produkt, usługa lub pomysł</div>
+      </div>
+      <div class="opt" data-value="Portfolio / CV online">
+        <div class="check-mark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="opt-name">Portfolio / CV</div>
+        <div class="opt-info">Twoje umiejętności i projekty</div>
+      </div>
+      <div class="opt" data-value="Strona produktu">
+        <div class="check-mark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="opt-name">Strona produktu</div>
+        <div class="opt-info">Fokus na jednym produkcie</div>
+      </div>
+      <div class="opt" data-value="Sklep internetowy">
+        <div class="check-mark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="opt-name">Sklep online</div>
+        <div class="opt-info">Wiele produktów do kupienia</div>
+      </div>
+      <div class="opt" data-value="Blog / serwis informacyjny">
+        <div class="check-mark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="opt-name">Blog / News</div>
+        <div class="opt-info">Artykuły i treści</div>
+      </div>
+      <div class="opt" data-value="Strona społeczności / wydarzenia">
+        <div class="check-mark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="opt-name">Społeczność / Event</div>
+        <div class="opt-info">Wydarzenie lub community</div>
+      </div>
+      <div class="opt opt-custom" data-value="">
+        <div class="check-mark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="opt-name">✏️ Inny</div>
+        <div class="opt-info">Wpisz własny rodzaj strony</div>
+        <input class="custom-input" type="text" id="customType" placeholder="np. Wiki, forum, aplikacja webowa..." oninput="updateCustom('type')">
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num" id="sn4">4</div>
+      <div class="step-title">Styl wizualny</div>
+    </div>
+    <div class="step-desc">Jak ma wyglądać Twoja strona? Wybierz klimat.</div>
+    <div class="options" id="styleOptions">
+      <div class="opt" data-value="Minimalistyczny / premium — dużo wolnej przestrzeni, prosta typografia, elegancki wygląd">
+        <div class="check-mark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="opt-name">Minimalistyczny</div>
+        <div class="opt-info">Elegancja, przestrzeń, prostota</div>
+      </div>
+      <div class="opt" data-value="Modern / tech — nowoczesne komponenty, gradienty, zaokrąglone elementy, futurystyczny wygląd">
+        <div class="check-mark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="opt-name">Modern / Tech</div>
+        <div class="opt-info">Gradienty, futuryzm, nowoczesność</div>
+      </div>
+      <div class="opt" data-value="Gaming / dark mode — ciemne tło, mocne kontrasty, neonowe akcenty, dynamiczny wygląd">
+        <div class="check-mark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="opt-name">Gaming / Dark</div>
+        <div class="opt-info">Ciemne tło, neon, kontrast</div>
+      </div>
+      <div class="opt" data-value="Creative / artistic — nietypowy układ, mocna identyfikacja wizualna, eksperymenty z kolorami">
+        <div class="check-mark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="opt-name">Creative / Artistic</div>
+        <div class="opt-info">Odważny układ, eksperymenty</div>
+      </div>
+      <div class="opt" data-value="Natural / eco — spokojne kolory, zdjęcia natury, naturalne elementy, organiczny wygląd">
+        <div class="check-mark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="opt-name">Natural / Eco</div>
+        <div class="opt-info">Spokojne kolory, natura</div>
+      </div>
+      <div class="opt opt-custom" data-value="">
+        <div class="check-mark"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="opt-name">✏️ Inny</div>
+        <div class="opt-info">Opisz własny styl wizualny</div>
+        <input class="custom-input" type="text" id="customStyle" placeholder="np. Retro, cyberpunk, pastelowy..." oninput="updateCustom('style')">
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num" id="sn5">5</div>
+      <div class="step-title">Paleta kolorów</div>
+    </div>
+    <div class="step-desc">Wybierz 2–5 kolorów. Kliknij w box z kolorem, żeby go zmienić.</div>
+    <div class="color-section">
+      <div id="colorList">
+        <div class="color-input-row">
+          <input type="color" value="#6F499D" oninput="onColorInput()">
+          <span class="color-hex">#6F499D</span>
+          <button class="color-remove" onclick="removeColor(this)" title="Usuń">×</button>
+        </div>
+        <div class="color-input-row">
+          <input type="color" value="#F58220" oninput="onColorInput()">
+          <span class="color-hex">#F58220</span>
+          <button class="color-remove" onclick="removeColor(this)" title="Usuń">×</button>
+        </div>
+      </div>
+      <button class="add-color-btn" onclick="addColor()">+ Dodaj kolor</button>
+
+      <div class="color-presets">
+        <div class="color-presets-label">Gotowe palety — kliknij, żeby załadować:</div>
+        <div class="preset-chips">
+          <button class="preset-chip" onclick="loadPreset(['#1A73E8','#FFFFFF','#F1F5F9'])">
+            <span class="preset-dots"><span style="background:#1A73E8"></span><span style="background:#FFFFFF; border:1px solid #ddd;border-radius:50%"></span><span style="background:#F1F5F9; border:1px solid #eee;border-radius:50%"></span></span>
+            Tech / Biznes
+          </button>
+          <button class="preset-chip" onclick="loadPreset(['#0D0D0D','#39FF14','#B026FF'])">
+            <span class="preset-dots"><span style="background:#0D0D0D"></span><span style="background:#39FF14"></span><span style="background:#B026FF"></span></span>
+            Gaming / Cyber
+          </button>
+          <button class="preset-chip" onclick="loadPreset(['#2D6A4F','#D4A373','#FEFAE0'])">
+            <span class="preset-dots"><span style="background:#2D6A4F"></span><span style="background:#D4A373"></span><span style="background:#FEFAE0"></span></span>
+            Natura / Eco
+          </button>
+          <button class="preset-chip" onclick="loadPreset(['#7B2D8E','#F472B6','#FDF2F8'])">
+            <span class="preset-dots"><span style="background:#7B2D8E"></span><span style="background:#F472B6"></span><span style="background:#FDF2F8"></span></span>
+            Kreatywność / Sztuka
+          </button>
+          <button class="preset-chip" onclick="loadPreset(['#DC2626','#1A1A1A','#FAFAFA'])">
+            <span class="preset-dots"><span style="background:#DC2626"></span><span style="background:#1A1A1A"></span><span style="background:#FAFAFA"></span></span>
+            Sport / Energia
+          </button>
+        </div>
+      </div>
+      <a class="link-hint" href="https://coolors.co" target="_blank" rel="noopener">↗ coolors.co — generator palet kolorów</a>
+    </div>
+  </div>
+
+  <!-- PROMPT OUTPUT -->
+  <div class="prompt-section" id="promptSection">
+    <div class="prompt-label">
+      <div class="icon-spark">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1L9.5 6.5L15 8L9.5 9.5L8 15L6.5 9.5L1 8L6.5 6.5L8 1Z" fill="#fff"/></svg>
+      </div>
+      <h2>Twój prompt</h2>
+    </div>
+
+    <div id="promptIncomplete" class="prompt-incomplete">
+      Uzupełnij wszystkie pola powyżej, a tutaj pojawi się gotowy prompt.<br>
+      <strong id="missingInfo"></strong>
+    </div>
+
+    <div id="promptReady" class="prompt-box" style="display:none;">
+      <div class="prompt-text" id="promptText"></div>
+      <div class="prompt-actions">
+        <button class="copy-btn" id="copyBtn" onclick="copyPrompt()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="9" height="9" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M3 11V3C3 2.44772 3.44772 2 4 2H10" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Kopiuj prompt
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ── State ──
+  const state = { goal: '', audience: '', type: '', style: '', colors: [] };
+
+  // ── Textarea listeners ──
+  document.getElementById('goal').addEventListener('input', function() {
+    state.goal = this.value.trim();
+    refresh();
+  });
+
+  document.getElementById('audience').addEventListener('input', function() {
+    state.audience = this.value.trim();
+    refresh();
+  });
+
+  // ── Option card selection (with custom support) ──
+  function setupOptions(containerId, stateKey) {
+    const container = document.getElementById(containerId);
+    container.querySelectorAll('.opt').forEach(opt => {
+      opt.addEventListener('click', (e) => {
+        // Don't re-trigger when clicking inside the text input
+        if (e.target.classList.contains('custom-input')) return;
+
+        container.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+
+        if (opt.classList.contains('opt-custom')) {
+          // Custom option — read from its input
+          const inputEl = opt.querySelector('.custom-input');
+          state[stateKey] = inputEl.value.trim();
+          setTimeout(() => inputEl.focus(), 50);
+        } else {
+          state[stateKey] = opt.dataset.value;
+        }
+        refresh();
+      });
+    });
+  }
+
+  setupOptions('typeOptions', 'type');
+  setupOptions('styleOptions', 'style');
+
+  // ── Custom input handler ──
+  function updateCustom(stateKey) {
+    const inputId = stateKey === 'type' ? 'customType' : 'customStyle';
+    const input = document.getElementById(inputId);
+    state[stateKey] = input.value.trim();
+    refresh();
+  }
+
+  // ── Read colors into state (no refresh call — avoids loop) ──
+  function readColors() {
+    const inputs = document.querySelectorAll('#colorList input[type="color"]');
+    const hexes = document.querySelectorAll('#colorList .color-hex');
+    state.colors = [];
+    inputs.forEach((inp, i) => {
+      const hex = inp.value.toUpperCase();
+      state.colors.push(hex);
+      if (hexes[i]) hexes[i].textContent = hex;
+    });
+  }
+
+  // ── Called from color input oninput ──
+  function onColorInput() {
+    readColors();
+    refresh();
+  }
+
+  function addColor() {
+    const randomColors = ['#3498DB','#E74C3C','#2ECC71','#F39C12','#9B59B6','#1ABC9C','#E67E22','#34495E'];
+    const c = randomColors[Math.floor(Math.random() * randomColors.length)];
+    const row = document.createElement('div');
+    row.className = 'color-input-row';
+    row.innerHTML =
+      '<input type="color" value="' + c + '" oninput="onColorInput()">' +
+      '<span class="color-hex">' + c.toUpperCase() + '</span>' +
+      '<button class="color-remove" onclick="removeColor(this)" title="Usuń">×</button>';
+    document.getElementById('colorList').appendChild(row);
+    readColors();
+    refresh();
+  }
+
+  function removeColor(btn) {
+    const list = document.getElementById('colorList');
+    if (list.children.length > 1) {
+      btn.parentElement.remove();
+      readColors();
+      refresh();
+    }
+  }
+
+  function loadPreset(colors) {
+    const list = document.getElementById('colorList');
+    list.innerHTML = '';
+    colors.forEach(c => {
+      const row = document.createElement('div');
+      row.className = 'color-input-row';
+      row.innerHTML =
+        '<input type="color" value="' + c + '" oninput="onColorInput()">' +
+        '<span class="color-hex">' + c.toUpperCase() + '</span>' +
+        '<button class="color-remove" onclick="removeColor(this)" title="Usuń">×</button>';
+      list.appendChild(row);
+    });
+    readColors();
+    refresh();
+  }
+
+  // ── Refresh UI ──
+  function refresh() {
+    // Read colors (no recursion — readColors doesn't call refresh)
+    readColors();
+
+    // Check completion
+    const filled = [
+      state.goal,
+      state.audience,
+      state.type,
+      state.style,
+      state.colors.length > 0
+    ];
+    const completed = filled.filter(Boolean).length;
+
+    // Progress bar
+    document.querySelectorAll('.progress-bar .seg').forEach((seg, i) => {
+      seg.classList.toggle('done', !!filled[i]);
+    });
+
+    // Step badges
+    for (let i = 1; i <= 5; i++) {
+      const el = document.getElementById('sn' + i);
+      if (filled[i - 1]) {
+        el.classList.add('done');
+        el.textContent = '✓';
+      } else {
+        el.classList.remove('done');
+        el.textContent = i;
+      }
+    }
+
+    // Prompt section
+    const section = document.getElementById('promptSection');
+    const allDone = completed === 5;
+
+    section.classList.toggle('ready', allDone);
+
+    if (allDone) {
+      document.getElementById('promptIncomplete').style.display = 'none';
+      document.getElementById('promptReady').style.display = 'block';
+      generatePrompt();
+    } else {
+      document.getElementById('promptIncomplete').style.display = 'block';
+      document.getElementById('promptReady').style.display = 'none';
+
+      const missing = [];
+      if (!state.goal) missing.push('cel strony');
+      if (!state.audience) missing.push('grupa docelowa');
+      if (!state.type) missing.push('rodzaj strony');
+      if (!state.style) missing.push('styl wizualny');
+      if (!state.colors.length) missing.push('paleta kolorów');
+      document.getElementById('missingInfo').textContent = 'Brakuje: ' + missing.join(', ');
+    }
+  }
+
+  // ── Structure per page type ──
+  const structures = {
+    'Landing page':
+      '- hero z mocnym nagłówkiem i przyciskiem CTA,\n' +
+      '- sekcja korzyści (3–4 punkty z ikonami),\n' +
+      '- opis oferty ze zdjęciem lub grafiką,\n' +
+      '- opinie użytkowników / social proof,\n' +
+      '- końcowe CTA z przyciskiem,\n' +
+      '- stopka z linkami i kontaktem.',
+    'Portfolio / CV online':
+      '- hero z imieniem, rolą i krótkim bio,\n' +
+      '- sekcja "o mnie",\n' +
+      '- galeria projektów (karty ze zdjęciami i opisami),\n' +
+      '- lista umiejętności,\n' +
+      '- formularz kontaktowy,\n' +
+      '- stopka z linkami do social media.',
+    'Strona produktu':
+      '- hero z nazwą produktu, grafiką i przyciskiem CTA,\n' +
+      '- sekcja cech / funkcji produktu,\n' +
+      '- galeria zdjęć produktu,\n' +
+      '- opinie klientów,\n' +
+      '- sekcja FAQ,\n' +
+      '- CTA z ceną i przyciskiem zakupu,\n' +
+      '- stopka.',
+    'Sklep internetowy':
+      '- hero z aktualną promocją lub banerem,\n' +
+      '- kategorie produktów,\n' +
+      '- siatka produktów (zdjęcie, nazwa, cena, przycisk),\n' +
+      '- wyróżnione oferty / bestsellery,\n' +
+      '- sekcja newsletter,\n' +
+      '- stopka z informacjami i linkami.',
+    'Blog / serwis informacyjny':
+      '- hero z wyróżnionym artykułem,\n' +
+      '- siatka najnowszych wpisów (miniaturka, tytuł, data),\n' +
+      '- kategorie / tagi,\n' +
+      '- sekcja "popularne artykuły",\n' +
+      '- zapis do newslettera,\n' +
+      '- stopka.',
+    'Strona społeczności / wydarzenia':
+      '- hero z nazwą wydarzenia, datą i miejscem,\n' +
+      '- program / agenda,\n' +
+      '- sekcja prelegentów lub organizatorów,\n' +
+      '- formularz rejestracji / zapisy,\n' +
+      '- sekcja FAQ,\n' +
+      '- stopka z kontaktem i mapą.'
+  };
+
+  function getStructure(type) {
+    if (structures[type]) return structures[type];
+    return '- sekcja główna z nagłówkiem,\n' +
+      '- opis projektu i najważniejsze informacje,\n' +
+      '- grafiki lub miejsca na grafiki,\n' +
+      '- przyciski akcji,\n' +
+      '- sekcja kontaktowa,\n' +
+      '- stopka.';
+  }
+
+  // ── Prompt generation ──
+  function generatePrompt() {
+    const palette = state.colors.join(', ');
+    const structure = getStructure(state.type);
+    const prompt =
+      'Stwórz profesjonalną stronę internetową.\n\n' +
+      'Rodzaj strony:\n' + state.type + '\n\n' +
+      'Cel strony:\n' + state.goal + '\n\n' +
+      'Grupa odbiorców:\n' + state.audience + '\n\n' +
+      'Struktura strony:\n' + structure + '\n\n' +
+      'Styl wizualny:\n' + state.style + '\n\n' +
+      'Kolorystyka:\n' + palette;
+
+    document.getElementById('promptText').textContent = prompt;
+  }
+
+  // ── Copy (with fallback for iframes) ──
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    ta.style.top = '-9999px';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+  }
+
+  function showCopied() {
+    var btn = document.getElementById('copyBtn');
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Skopiowano!';
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="9" height="9" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M3 11V3C3 2.44772 3.44772 2 4 2H10" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg> Kopiuj prompt';
+    }, 2000);
+  }
+
+  function copyPrompt() {
+    var text = document.getElementById('promptText').textContent;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(showCopied).catch(function() {
+        fallbackCopy(text);
+        showCopied();
+      });
+    } else {
+      fallbackCopy(text);
+      showCopied();
+    }
+  }
+
+  // ── Init ──
+  readColors();
+  refresh();
+</script>
+
+</body>
+</html>
