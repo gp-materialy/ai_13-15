@@ -1,0 +1,1430 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mapa narzędzi AI</title>
+  <style>
+    :root {
+      --orange: #ff6b00;
+      --orange-dark: #d95700;
+      --orange-soft: #fff1e4;
+      --purple: #5b21b6;
+      --purple-deep: #341066;
+      --purple-soft: #f3edff;
+      --ink: #221536;
+      --muted: #665a78;
+      --line: #e7dff0;
+      --paper: #fffdf9;
+      --valid: #15945f;
+      --valid-soft: #eefbf5;
+      --gold: #ffb000;
+      --shadow: 0 18px 45px rgba(52, 16, 102, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+    }
+
+    body {
+      min-height: 100%;
+      margin: 0;
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        repeating-linear-gradient(90deg, rgba(255, 107, 0, 0.06) 0 1px, transparent 1px 34px),
+        linear-gradient(135deg, #fff8f0 0%, #ffffff 46%, #f6f0ff 100%);
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .worksheet {
+      width: min(1100px, calc(100% - 24px));
+      margin: 18px auto;
+      padding: 18px;
+      border: 1px solid rgba(91, 33, 182, 0.14);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      overflow: hidden;
+      border-radius: 8px;
+      color: #fff;
+      background:
+        repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0 1px, transparent 1px 18px),
+        linear-gradient(115deg, var(--purple-deep) 0%, var(--purple) 54%, var(--orange) 100%);
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+      gap: 16px;
+      padding: 20px;
+    }
+
+    .identity-field {
+      display: grid;
+      gap: 5px;
+      width: min(360px, 100%);
+      margin-bottom: 12px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .identity-field input {
+      width: 100%;
+      height: 42px;
+      border: 2px solid rgba(255, 255, 255, 0.38);
+      border-radius: 8px;
+      padding: 9px 10px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.92);
+      outline: none;
+    }
+
+    .identity-field input:focus {
+      border-color: #fff;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.24);
+    }
+
+    .brand-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin: 0 0 10px;
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+      font-size: clamp(2.15rem, 6vw, 4.5rem);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    .hero-copy {
+      max-width: 660px;
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.45;
+      color: rgba(255, 255, 255, 0.88);
+    }
+
+    .lab-note {
+      display: inline-flex;
+      width: fit-content;
+      max-width: 100%;
+      margin-top: 12px;
+      padding: 7px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      border-radius: 8px;
+      color: rgba(255, 255, 255, 0.94);
+      background: rgba(255, 255, 255, 0.11);
+      font-size: 0.86rem;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .student-panel {
+      align-self: start;
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+    }
+
+    .badge-slot {
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+      min-height: 156px;
+      padding: 11px;
+      border: 2px dashed rgba(255, 255, 255, 0.46);
+      border-radius: 8px;
+      color: rgba(255, 255, 255, 0.9);
+      background:
+        repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.12) 0 8px, rgba(255, 255, 255, 0.03) 8px 16px),
+        rgba(255, 255, 255, 0.08);
+    }
+
+    .badge-title {
+      margin: 0;
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      text-align: center;
+    }
+
+    .badge-placeholder,
+    .badge-art {
+      place-self: center;
+      width: min(156px, 100%);
+      aspect-ratio: 1;
+    }
+
+    .badge-placeholder {
+      display: grid;
+      place-items: center;
+      border: 2px dashed rgba(255, 255, 255, 0.62);
+      border-radius: 8px;
+      color: rgba(255, 255, 255, 0.88);
+      background:
+        repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.16) 0 7px, transparent 7px 14px),
+        rgba(255, 255, 255, 0.08);
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .badge-art {
+      display: none;
+      filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.22));
+    }
+
+    .badge-status {
+      margin: 0;
+      font-size: 0.8rem;
+      font-weight: 800;
+      line-height: 1.3;
+      color: rgba(255, 255, 255, 0.9);
+      text-align: center;
+    }
+
+    .badge-slot.is-unlocked {
+      border-color: rgba(255, 255, 255, 0.74);
+      background:
+        radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.32), transparent 42%),
+        linear-gradient(145deg, rgba(255, 176, 0, 0.24), rgba(255, 255, 255, 0.1));
+    }
+
+    .badge-slot.is-unlocked .badge-placeholder {
+      display: none;
+    }
+
+    .badge-slot.is-unlocked .badge-art {
+      display: block;
+    }
+
+    .progress-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .progress-track {
+      overflow: hidden;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #fff, #ffd2ab);
+      transition: width 280ms ease;
+    }
+
+    .progress-text {
+      min-width: 48px;
+      text-align: right;
+      font-weight: 900;
+      font-size: 0.86rem;
+      color: #fff;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-end;
+      margin: 14px 0 4px;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 8px;
+      min-height: 38px;
+      padding: 9px 12px;
+      color: #fff;
+      background: var(--purple);
+      box-shadow: 0 8px 16px rgba(91, 33, 182, 0.14);
+      font-weight: 800;
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      background: var(--purple-deep);
+    }
+
+    .btn.secondary {
+      color: var(--purple-deep);
+      background: var(--purple-soft);
+      box-shadow: none;
+    }
+
+    .btn.secondary:hover,
+    .btn.secondary:focus-visible {
+      background: #eadfff;
+    }
+
+    .btn.orange {
+      background: var(--orange);
+    }
+
+    .btn.orange:hover,
+    .btn.orange:focus-visible {
+      background: var(--orange-dark);
+    }
+
+    .section {
+      padding: 14px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .section-head {
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      margin-bottom: 0;
+      color: var(--purple-deep);
+      font-size: 1.15rem;
+      line-height: 1.25;
+    }
+
+    .micro {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .entry {
+      display: grid;
+      gap: 6px;
+    }
+
+    .entry-title {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      min-height: 24px;
+      font-size: 0.9rem;
+      font-weight: 900;
+    }
+
+    .number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--orange);
+      font-size: 0.76rem;
+      font-weight: 900;
+    }
+
+    .field-control,
+    select.field-control {
+      width: 100%;
+      min-height: 42px;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      padding: 9px 10px;
+      color: var(--ink);
+      background: #fff;
+      outline: none;
+      resize: vertical;
+      transition: border-color 170ms ease, background 170ms ease, box-shadow 170ms ease;
+    }
+
+    textarea.field-control {
+      min-height: 76px;
+      line-height: 1.35;
+    }
+
+    .field-control:focus {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 3px rgba(91, 33, 182, 0.12);
+    }
+
+    .entry.is-valid .field-control,
+    .field-control.is-valid {
+      border-color: var(--valid);
+      background: var(--valid-soft);
+    }
+
+    .term-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .mission-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .mission-row {
+      display: grid;
+      grid-template-columns: minmax(210px, 1fr) minmax(145px, 0.58fr) minmax(160px, 0.7fr) minmax(210px, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .prompt-row {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.85fr) minmax(300px, 1fr);
+      gap: 10px;
+      align-items: stretch;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .prompt-box {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+      padding: 10px;
+      border-left: 5px solid var(--purple);
+      border-radius: 8px;
+      background: linear-gradient(180deg, var(--purple-soft), #fff);
+    }
+
+    .prompt-top {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 30px;
+    }
+
+    .prompt-top strong {
+      color: var(--purple-deep);
+    }
+
+    .copy-btn {
+      border: 1px solid rgba(91, 33, 182, 0.16);
+      border-radius: 8px;
+      padding: 6px 8px;
+      color: var(--purple-deep);
+      background: #fff;
+      font-size: 0.76rem;
+      font-weight: 900;
+    }
+
+    .copy-btn:hover,
+    .copy-btn:focus-visible {
+      border-color: var(--orange);
+      color: #9b3a00;
+    }
+
+    .prompt-editor {
+      min-height: 164px;
+      margin: 0;
+      border-color: rgba(91, 33, 182, 0.18);
+      background: rgba(255, 255, 255, 0.9);
+      font-size: 0.9rem;
+      line-height: 1.36;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.76fr) minmax(320px, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .check-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .check-list.wide {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .check-item {
+      display: flex;
+      gap: 9px;
+      align-items: center;
+      min-height: 40px;
+      padding: 8px 10px;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      font-weight: 750;
+      transition: border-color 170ms ease, background 170ms ease;
+    }
+
+    .check-item input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--orange);
+    }
+
+    .check-item.is-valid {
+      border-color: var(--valid);
+      color: #0c6842;
+      background: var(--valid-soft);
+    }
+
+    .footer-note {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0 0;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 20;
+      max-width: min(340px, calc(100% - 36px));
+      padding: 12px 14px;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--purple-deep);
+      box-shadow: 0 14px 28px rgba(34, 21, 54, 0.28);
+      opacity: 0;
+      transform: translateY(14px);
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+      font-weight: 800;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .celebration {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(34, 21, 54, 0.38);
+    }
+
+    .celebration[hidden] {
+      display: none;
+    }
+
+    .celebration-card {
+      position: relative;
+      overflow: hidden;
+      width: min(460px, 100%);
+      padding: 26px;
+      border-radius: 8px;
+      text-align: center;
+      background: #fff;
+      box-shadow: 0 24px 56px rgba(34, 21, 54, 0.26);
+      animation: pop-in 360ms cubic-bezier(.18, .89, .32, 1.28);
+    }
+
+    .celebration-card h2 {
+      margin-bottom: 8px;
+      color: var(--purple-deep);
+      font-size: 1.5rem;
+    }
+
+    .celebration-card p {
+      margin-bottom: 16px;
+      color: var(--muted);
+    }
+
+    .badge-done {
+      display: inline-grid;
+      place-items: center;
+      width: 60px;
+      height: 60px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--orange), var(--purple));
+      font-size: 2rem;
+      font-weight: 900;
+    }
+
+    .confetti {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .confetti span {
+      position: absolute;
+      top: -20px;
+      left: calc(var(--x) * 1%);
+      width: 8px;
+      height: 14px;
+      border-radius: 2px;
+      background: var(--color);
+      transform: rotate(var(--rot));
+      animation: fall 900ms ease-in forwards;
+      animation-delay: var(--delay);
+    }
+
+    @keyframes pop-in {
+      from {
+        opacity: 0;
+        transform: scale(0.92) translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    @keyframes fall {
+      to {
+        opacity: 0;
+        transform: translateY(360px) rotate(calc(var(--rot) + 180deg));
+      }
+    }
+
+    @media (max-width: 940px) {
+      .hero-inner,
+      .mission-row,
+      .prompt-row,
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .term-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .check-list.wide {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .worksheet {
+        width: min(100% - 12px, 1100px);
+        margin: 6px auto;
+        padding: 10px;
+      }
+
+      .hero-inner {
+        padding: 14px;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+      }
+
+      .term-grid,
+      .check-list.wide {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        display: grid;
+      }
+
+      .toolbar .btn {
+        flex: 1 1 150px;
+      }
+    }
+
+    @media print {
+      @page {
+        margin: 12mm;
+      }
+
+      *,
+      *::before,
+      *::after {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      body {
+        background: #fff;
+      }
+
+      .worksheet {
+        width: 100%;
+        margin: 0;
+        padding: 12px;
+        border: 1px solid rgba(91, 33, 182, 0.22);
+        box-shadow: none;
+      }
+
+      .toolbar,
+      .copy-btn,
+      .toast,
+      .celebration,
+      .progress-row,
+      .micro {
+        display: none !important;
+      }
+
+      .hero,
+      .student-panel,
+      .section-head,
+      .entry,
+      .mission-row,
+      .prompt-row,
+      .prompt-box,
+      .check-item,
+      .field-control {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .section {
+        padding: 9px 0;
+      }
+
+      .field-control {
+        min-height: 48px;
+        box-shadow: none !important;
+      }
+
+      textarea.field-control {
+        min-height: 64px;
+        overflow: visible;
+        resize: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="worksheet" aria-labelledby="page-title">
+    <header class="hero">
+      <div class="hero-inner">
+        <div>
+          <label class="identity-field">
+            Imię i nazwisko
+            <input id="student-name" data-save="true" autocomplete="name">
+          </label>
+          <p class="brand-line">
+            <span>Giganci Programowania</span>
+          </p>
+          <h1 id="page-title">Mapa narzędzi AI</h1>
+          <p class="hero-copy">Działasz jak analityk w laboratorium AI: testujesz zadania, wybierasz narzędzia i zapisujesz, gdzie trzeba sprawdzić wynik.</p>
+          <p class="lab-note">Cel: zbudować własną mapę decyzji, a potem przenieść ją do Canvy.</p>
+        </div>
+
+        <div class="student-panel" aria-label="Odznaka finałowa">
+          <div class="badge-slot" id="badge-slot" aria-live="polite">
+            <p class="badge-title">Odznaka finałowa</p>
+            <div class="badge-placeholder" aria-hidden="true">Uzupełnij<br>kartę</div>
+            <svg class="badge-art" viewBox="0 0 180 180" role="img" aria-labelledby="badge-title badge-desc">
+              <title id="badge-title">Odznaka Analityk AI</title>
+              <desc id="badge-desc">Złota odznaka z kolbą, wykresem i napisem Analityk AI.</desc>
+              <defs>
+                <linearGradient id="badgeFill" x1="20" y1="14" x2="160" y2="166" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#ffd978"/>
+                  <stop offset="0.52" stop-color="#ffb000"/>
+                  <stop offset="1" stop-color="#ff6b00"/>
+                </linearGradient>
+                <linearGradient id="glassFill" x1="50" y1="55" x2="125" y2="128" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#ffffff"/>
+                  <stop offset="1" stop-color="#e9ddff"/>
+                </linearGradient>
+              </defs>
+              <path d="M90 9l22 25 33-1 2 33 24 22-24 22-2 33-33-1-22 25-22-25-33 1-2-33L9 88l24-22 2-33 33 1L90 9z" fill="url(#badgeFill)"/>
+              <path d="M90 23l17 20 26-1 1 27 20 18-20 18-1 27-26-1-17 20-17-20-26 1-1-27-20-18 20-18 1-27 26 1L90 23z" fill="#fff7d7" opacity=".44"/>
+              <path d="M70 45h40v12H99v25l30 42c7 10 0 24-12 24H63c-12 0-19-14-12-24l30-42V57H70V45z" fill="#341066"/>
+              <path d="M89 57v28l-29 41c-3 5 0 11 6 11h48c6 0 9-6 6-11L91 85V57h-2z" fill="url(#glassFill)"/>
+              <path d="M65 121c13 5 35-5 50 1l5 8c2 4-1 7-5 7H65c-4 0-7-4-5-7l5-9z" fill="#5b21b6" opacity=".82"/>
+              <path d="M68 100l14-12 13 9 18-22" fill="none" stroke="#ff6b00" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="114" cy="75" r="7" fill="#ff6b00"/>
+              <text x="90" y="164" text-anchor="middle" font-size="17" font-family="Arial, sans-serif" font-weight="900" fill="#341066">ANALITYK AI</text>
+            </svg>
+            <p class="badge-status" id="badge-status">Odblokujesz ją po komplecie wpisów.</p>
+          </div>
+          <div class="progress-row" aria-label="Postęp karty">
+            <div class="progress-track" aria-hidden="true">
+              <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="progress-text" id="progress-text">0%</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="toolbar" aria-label="Narzędzia karty">
+      <button class="btn secondary" type="button" id="print-btn">Drukuj</button>
+      <button class="btn secondary" type="button" id="clear-btn">Wyczyść</button>
+      <button class="btn orange" type="button" id="download-btn">Pobierz HTML</button>
+    </div>
+
+    <section class="section" aria-labelledby="mission-title">
+      <div class="section-head">
+        <h2 id="mission-title">1. Problem do rozwiązania</h2>
+        <p class="micro">Wpisz realne zadanie ze szkoły albo hobby.</p>
+      </div>
+      <label class="entry">
+        <span class="entry-title"><span class="number">1</span> Moje zadanie</span>
+        <textarea class="field-control" id="main-task" data-check="text" rows="3" placeholder="Np. chcę przygotować prezentację o energii odnawialnej"></textarea>
+      </label>
+    </section>
+
+    <section class="section" aria-labelledby="types-title">
+      <div class="section-head">
+        <h2 id="types-title">2. Co może stworzyć AI?</h2>
+        <p class="micro">Do każdej kategorii wpisz jeden przykład.</p>
+      </div>
+      <div class="term-grid">
+        <label class="entry">
+          <span class="entry-title"><span class="number">T</span> Tekst</span>
+          <textarea class="field-control" id="type-text" data-check="text" rows="2" placeholder="np. streszczenie"></textarea>
+        </label>
+        <label class="entry">
+          <span class="entry-title"><span class="number">O</span> Obraz</span>
+          <textarea class="field-control" id="type-image" data-check="text" rows="2" placeholder="np. grafika do slajdu"></textarea>
+        </label>
+        <label class="entry">
+          <span class="entry-title"><span class="number">D</span> Dźwięk</span>
+          <textarea class="field-control" id="type-audio" data-check="text" rows="2" placeholder="np. krótki podkład"></textarea>
+        </label>
+        <label class="entry">
+          <span class="entry-title"><span class="number">W</span> Wideo</span>
+          <textarea class="field-control" id="type-video" data-check="text" rows="2" placeholder="np. animacja"></textarea>
+        </label>
+        <label class="entry">
+          <span class="entry-title"><span class="number">K</span> Kod</span>
+          <textarea class="field-control" id="type-code" data-check="text" rows="2" placeholder="np. pomoc w HTML"></textarea>
+        </label>
+        <label class="entry">
+          <span class="entry-title"><span class="number">A</span> Automatyzacja</span>
+          <textarea class="field-control" id="type-auto" data-check="text" rows="2" placeholder="np. plan tygodnia"></textarea>
+        </label>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="missions-title">
+      <div class="section-head">
+        <h2 id="missions-title">3. Trzy misje na mapę</h2>
+        <p class="micro">Dobierz kategorię, narzędzie i pułapkę.</p>
+      </div>
+      <div class="mission-list">
+        <article class="mission-row">
+          <label class="entry">
+            <span class="entry-title"><span class="number">1</span> Zadanie</span>
+            <textarea class="field-control" id="mission-1-task" data-check="text" rows="2"></textarea>
+          </label>
+          <label class="entry">
+            <span class="entry-title">Kategoria</span>
+            <select class="field-control" id="mission-1-category" data-check="select">
+              <option value="">Wybierz</option>
+              <option>Tekst</option>
+              <option>Obraz</option>
+              <option>Dźwięk</option>
+              <option>Wideo</option>
+              <option>Kod</option>
+              <option>Automatyzacja</option>
+            </select>
+          </label>
+          <label class="entry">
+            <span class="entry-title">Narzędzie</span>
+            <textarea class="field-control" id="mission-1-tool" data-check="text" rows="2" placeholder="np. Gemini"></textarea>
+          </label>
+          <label class="entry">
+            <span class="entry-title">Ryzyko</span>
+            <textarea class="field-control" id="mission-1-risk" data-check="text" rows="2" placeholder="Co sprawdzić?"></textarea>
+          </label>
+        </article>
+
+        <article class="mission-row">
+          <label class="entry">
+            <span class="entry-title"><span class="number">2</span> Zadanie</span>
+            <textarea class="field-control" id="mission-2-task" data-check="text" rows="2"></textarea>
+          </label>
+          <label class="entry">
+            <span class="entry-title">Kategoria</span>
+            <select class="field-control" id="mission-2-category" data-check="select">
+              <option value="">Wybierz</option>
+              <option>Tekst</option>
+              <option>Obraz</option>
+              <option>Dźwięk</option>
+              <option>Wideo</option>
+              <option>Kod</option>
+              <option>Automatyzacja</option>
+            </select>
+          </label>
+          <label class="entry">
+            <span class="entry-title">Narzędzie</span>
+            <textarea class="field-control" id="mission-2-tool" data-check="text" rows="2"></textarea>
+          </label>
+          <label class="entry">
+            <span class="entry-title">Ryzyko</span>
+            <textarea class="field-control" id="mission-2-risk" data-check="text" rows="2"></textarea>
+          </label>
+        </article>
+
+        <article class="mission-row">
+          <label class="entry">
+            <span class="entry-title"><span class="number">3</span> Zadanie</span>
+            <textarea class="field-control" id="mission-3-task" data-check="text" rows="2"></textarea>
+          </label>
+          <label class="entry">
+            <span class="entry-title">Kategoria</span>
+            <select class="field-control" id="mission-3-category" data-check="select">
+              <option value="">Wybierz</option>
+              <option>Tekst</option>
+              <option>Obraz</option>
+              <option>Dźwięk</option>
+              <option>Wideo</option>
+              <option>Kod</option>
+              <option>Automatyzacja</option>
+            </select>
+          </label>
+          <label class="entry">
+            <span class="entry-title">Narzędzie</span>
+            <textarea class="field-control" id="mission-3-tool" data-check="text" rows="2"></textarea>
+          </label>
+          <label class="entry">
+            <span class="entry-title">Ryzyko</span>
+            <textarea class="field-control" id="mission-3-risk" data-check="text" rows="2"></textarea>
+          </label>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="prompt-title">
+      <div class="section-head">
+        <h2 id="prompt-title">4. Gemini jako asystent laboratorium</h2>
+        <p class="micro">Skopiuj prompt, uzupełnij nawiasy i sprawdź odpowiedź.</p>
+      </div>
+      <article class="prompt-row">
+        <div class="prompt-box">
+          <div class="prompt-top">
+            <strong>Prompt do Gemini</strong>
+            <button class="copy-btn" type="button" data-copy="gemini-prompt">Kopiuj</button>
+          </div>
+          <textarea class="field-control prompt-editor" id="gemini-prompt" rows="8">Jestem uczniem i tworzę mapę narzędzi AI. Moje trzy zadania to: [wklej zadanie 1], [wklej zadanie 2], [wklej zadanie 3].
+
+Przygotuj krótką tabelę: zadanie, najlepsza kategoria AI, proponowane narzędzie, pierwszy prompt do użycia, ryzyko lub pułapka, jak sprawdzić wynik.
+
+Pisz konkretnie, bez długiego wstępu. Dopasuj propozycje do ucznia w wieku 13-15 lat.</textarea>
+        </div>
+        <label class="entry">
+          <span class="entry-title">Co poprawiam po odpowiedzi Gemini?</span>
+          <textarea class="field-control" id="gemini-note" data-check="text" rows="8" placeholder="Np. zmieniam narzędzie, skracam opis, dopisuję sprawdzanie faktów"></textarea>
+        </label>
+      </article>
+    </section>
+
+    <section class="section" aria-labelledby="canva-title">
+      <div class="section-head">
+        <h2 id="canva-title">5. Mapa w Canva</h2>
+        <p class="micro">Zaznacz, gdy element jest widoczny na projekcie.</p>
+      </div>
+      <ul class="check-list wide">
+        <li><label class="check-item"><input type="checkbox" id="canva-title-check" data-check="checkbox"> Tytuł mapy</label></li>
+        <li><label class="check-item"><input type="checkbox" id="canva-six-check" data-check="checkbox"> 6 kategorii AI</label></li>
+        <li><label class="check-item"><input type="checkbox" id="canva-tools-check" data-check="checkbox"> Minimum 3 narzędzia</label></li>
+        <li><label class="check-item"><input type="checkbox" id="canva-risks-check" data-check="checkbox"> Pułapki i check wyniku</label></li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="summary-title">
+      <div class="section-head">
+        <h2 id="summary-title">6. Wniosek analityka</h2>
+        <p class="micro">Jedna zasada, którą zabierasz z lekcji.</p>
+      </div>
+      <label class="entry">
+        <span class="entry-title"><span class="number">✓</span> Moja zasada wyboru narzędzia</span>
+        <textarea class="field-control" id="final-rule" data-check="text" rows="3" placeholder="Np. najpierw wybieram typ zadania, potem narzędzie i sposób sprawdzenia wyniku"></textarea>
+      </label>
+    </section>
+
+    <footer class="footer-note">
+      <span>Postęp zapisuje się w tej przeglądarce.</span>
+      <span>Gotową kartę można pobrać albo wydrukować.</span>
+    </footer>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="celebration" id="celebration" hidden>
+    <div class="celebration-card" role="dialog" aria-modal="true" aria-labelledby="done-title">
+      <div class="confetti" aria-hidden="true" id="confetti"></div>
+      <div class="badge-done" aria-hidden="true">✓</div>
+      <h2 id="done-title">Mapa gotowa</h2>
+      <p>Odznaka Analityk AI odblokowana. Możesz pobrać plik albo wydrukować kartę.</p>
+      <button class="btn orange" type="button" id="done-download">Pobierz HTML</button>
+      <button class="btn secondary" type="button" id="done-close">Zamknij</button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var STORAGE_KEY = "ai-worksheet-mapa-narzedzi-v1";
+      var exportedDocument = document.documentElement.dataset.exported === "true";
+      var fields = Array.prototype.slice.call(document.querySelectorAll("input, textarea, select"));
+      var controls = Array.prototype.slice.call(document.querySelectorAll("[data-check]"));
+      var requiredControls = controls;
+      var progressBar = document.getElementById("progress-bar");
+      var progressText = document.getElementById("progress-text");
+      var badgeSlot = document.getElementById("badge-slot");
+      var badgeStatus = document.getElementById("badge-status");
+      var toast = document.getElementById("toast");
+      var celebration = document.getElementById("celebration");
+      var confetti = document.getElementById("confetti");
+      var hasCelebrated = false;
+      var badgeUnlocked = false;
+      var booting = true;
+      var toastTimer = 0;
+      var printTextareaHeights = [];
+
+      function isComplete(control) {
+        if (control.type === "checkbox") {
+          return control.checked;
+        }
+        if (control.tagName === "SELECT") {
+          return control.value.trim().length > 0;
+        }
+        return control.value.trim().length >= 7;
+      }
+
+      function fieldContainer(control) {
+        if (control.type === "checkbox") {
+          return control.closest(".check-item");
+        }
+        return control.closest(".entry") || control.parentElement;
+      }
+
+      function validateControl(control, markTouched) {
+        var ok = isComplete(control);
+        var container = fieldContainer(control);
+
+        if (markTouched) {
+          control.dataset.touched = "true";
+        }
+
+        if (container) {
+          container.classList.toggle("is-valid", ok);
+        }
+
+        if (control.type !== "checkbox") {
+          control.classList.toggle("is-valid", ok);
+          control.setAttribute("aria-invalid", "false");
+        }
+
+        return ok;
+      }
+
+      function updateProgress(triggerCelebration) {
+        var valid = requiredControls.filter(function (control) {
+          return validateControl(control, false);
+        }).length;
+        var total = requiredControls.length;
+        var percent = total ? Math.round((valid / total) * 100) : 0;
+        var complete = total > 0 && valid === total;
+        progressBar.style.width = percent + "%";
+        progressText.textContent = percent + "%";
+
+        if (complete && !badgeUnlocked) {
+          badgeUnlocked = true;
+          saveData();
+        }
+
+        applyBadgeState(complete || badgeUnlocked);
+
+        if (complete && !hasCelebrated && triggerCelebration && !booting) {
+          hasCelebrated = true;
+          showCelebration();
+        }
+      }
+
+      function gatherData() {
+        var data = {};
+        fields.forEach(function (field) {
+          data[field.id] = field.type === "checkbox" ? field.checked : field.value;
+        });
+        data.__badgeUnlocked = badgeUnlocked;
+        return data;
+      }
+
+      function hasEmbeddedValues() {
+        return fields.some(function (field) {
+          if (field.type === "checkbox") {
+            return field.checked;
+          }
+          if (field.tagName === "SELECT") {
+            return field.value.trim().length > 0;
+          }
+          return field.value.trim().length > 0 && !field.classList.contains("prompt-editor");
+        });
+      }
+
+      function saveData() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(gatherData()));
+        } catch (error) {
+          return false;
+        }
+        return true;
+      }
+
+      function loadData() {
+        if (exportedDocument && hasEmbeddedValues()) {
+          return;
+        }
+
+        try {
+          var saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+          badgeUnlocked = Boolean(saved.__badgeUnlocked);
+          hasCelebrated = badgeUnlocked;
+          fields.forEach(function (field) {
+            if (!Object.prototype.hasOwnProperty.call(saved, field.id)) return;
+            if (field.type === "checkbox") {
+              field.checked = Boolean(saved[field.id]);
+            } else {
+              field.value = saved[field.id];
+            }
+          });
+        } catch (error) {
+          showToast("Nie udało się odczytać zapisu z przeglądarki.");
+        }
+      }
+
+      function applyBadgeState(unlocked) {
+        if (!badgeSlot) return;
+        badgeSlot.classList.toggle("is-unlocked", Boolean(unlocked));
+        badgeSlot.setAttribute(
+          "aria-label",
+          unlocked ? "Odznaka Analityk AI odblokowana" : "Odznaka Analityk AI zablokowana"
+        );
+        if (badgeStatus) {
+          badgeStatus.textContent = unlocked
+            ? "ANALITYK AI"
+            : "Odblokujesz ją po komplecie wpisów.";
+        }
+      }
+
+      function showToast(message) {
+        window.clearTimeout(toastTimer);
+        toast.textContent = message;
+        toast.classList.add("show");
+        toastTimer = window.setTimeout(function () {
+          toast.classList.remove("show");
+        }, 2600);
+      }
+
+      function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text);
+        }
+
+        return new Promise(function (resolve, reject) {
+          var temp = document.createElement("textarea");
+          temp.value = text;
+          temp.setAttribute("readonly", "");
+          temp.style.position = "fixed";
+          temp.style.left = "-999px";
+          document.body.appendChild(temp);
+          temp.select();
+          try {
+            document.execCommand("copy");
+            resolve();
+          } catch (error) {
+            reject(error);
+          } finally {
+            document.body.removeChild(temp);
+          }
+        });
+      }
+
+      function buildConfetti() {
+        var colors = ["#ff6b00", "#5b21b6", "#ffb000", "#15945f", "#f05aa6"];
+        confetti.innerHTML = "";
+        for (var i = 0; i < 30; i += 1) {
+          var piece = document.createElement("span");
+          piece.style.setProperty("--x", String(4 + Math.random() * 92));
+          piece.style.setProperty("--rot", Math.round(Math.random() * 160) + "deg");
+          piece.style.setProperty("--delay", Math.round(Math.random() * 280) + "ms");
+          piece.style.setProperty("--color", colors[i % colors.length]);
+          confetti.appendChild(piece);
+        }
+      }
+
+      function showCelebration() {
+        buildConfetti();
+        celebration.hidden = false;
+        showToast("Odznaka Analityk AI odblokowana.");
+      }
+
+      function closeCelebration() {
+        celebration.hidden = true;
+      }
+
+      function prepareExportHtml() {
+        var clone = document.documentElement.cloneNode(true);
+        clone.dataset.exported = "true";
+
+        var sourceControls = Array.prototype.slice.call(document.querySelectorAll("input, textarea, select"));
+        var cloneControls = Array.prototype.slice.call(clone.querySelectorAll("input, textarea, select"));
+        sourceControls.forEach(function (source, index) {
+          var target = cloneControls[index];
+          if (!target) return;
+
+          if (source.type === "checkbox") {
+            if (source.checked) {
+              target.setAttribute("checked", "checked");
+            } else {
+              target.removeAttribute("checked");
+            }
+          } else if (target.tagName === "TEXTAREA") {
+            target.textContent = source.value;
+          } else if (target.tagName === "SELECT") {
+            Array.prototype.slice.call(target.options).forEach(function (option) {
+              option.selected = option.value === source.value;
+            });
+          } else {
+            target.setAttribute("value", source.value);
+          }
+        });
+
+        var clonedBadge = clone.querySelector("#badge-slot");
+        if (clonedBadge) {
+          clonedBadge.classList.toggle("is-unlocked", badgeUnlocked);
+        }
+
+        var clonedBadgeStatus = clone.querySelector("#badge-status");
+        if (clonedBadgeStatus) {
+          clonedBadgeStatus.textContent = badgeUnlocked
+            ? "ANALITYK AI"
+            : "Odblokujesz ją po komplecie wpisów.";
+        }
+
+        var clonedCelebration = clone.querySelector("#celebration");
+        if (clonedCelebration) {
+          clonedCelebration.hidden = true;
+          clonedCelebration.setAttribute("hidden", "");
+        }
+
+        var clonedToast = clone.querySelector("#toast");
+        if (clonedToast) {
+          clonedToast.textContent = "";
+          clonedToast.classList.remove("show");
+        }
+
+        return "<!doctype html>\n" + clone.outerHTML;
+      }
+
+      function safeFilename(value) {
+        var text = String(value || "karta-ai").toLowerCase();
+        var map = {
+          "ą": "a",
+          "ć": "c",
+          "ę": "e",
+          "ł": "l",
+          "ń": "n",
+          "ó": "o",
+          "ś": "s",
+          "ź": "z",
+          "ż": "z"
+        };
+        var result = "";
+        var lastDash = false;
+
+        for (var i = 0; i < text.length && result.length < 48; i += 1) {
+          var character = map[text.charAt(i)] || text.charAt(i);
+          var code = character.charCodeAt(0);
+          var isLetter = code >= 97 && code <= 122;
+          var isDigit = code >= 48 && code <= 57;
+
+          if (isLetter || isDigit) {
+            result += character;
+            lastDash = false;
+          } else if (!lastDash && result.length > 0) {
+            result += "-";
+            lastDash = true;
+          }
+        }
+
+        while (result.charAt(result.length - 1) === "-") {
+          result = result.slice(0, -1);
+        }
+
+        return result || "karta-ai";
+      }
+
+      function downloadHtml() {
+        saveData();
+        updateProgress(false);
+        var studentName = document.getElementById("student-name").value;
+        var file = new Blob([prepareExportHtml()], { type: "text/html;charset=utf-8" });
+        var link = document.createElement("a");
+        link.href = URL.createObjectURL(file);
+        link.download = safeFilename(studentName) + "-mapa-narzedzi-ai.html";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.setTimeout(function () {
+          URL.revokeObjectURL(link.href);
+        }, 1000);
+        showToast("Plik HTML został przygotowany do pobrania.");
+      }
+
+      function expandTextareasForPrint() {
+        if (printTextareaHeights.length > 0) {
+          return;
+        }
+
+        printTextareaHeights = Array.prototype.slice.call(document.querySelectorAll("textarea.field-control")).map(function (field) {
+          var previousHeight = field.style.height;
+          field.style.height = "auto";
+          field.style.height = Math.max(field.scrollHeight + 4, field.offsetHeight) + "px";
+          return { field: field, height: previousHeight };
+        });
+      }
+
+      function restoreTextareasAfterPrint() {
+        printTextareaHeights.forEach(function (item) {
+          item.field.style.height = item.height;
+        });
+        printTextareaHeights = [];
+      }
+
+      fields.forEach(function (field) {
+        var eventName = field.type === "checkbox" || field.tagName === "SELECT" ? "change" : "input";
+        field.addEventListener(eventName, function () {
+          var isTracked = Boolean(field.dataset.check);
+          if (isTracked) {
+            validateControl(field, true);
+          }
+          saveData();
+          updateProgress(isTracked);
+        });
+        field.addEventListener("blur", function () {
+          if (field.dataset.check) {
+            validateControl(field, true);
+          }
+          updateProgress(false);
+        });
+      });
+
+      Array.prototype.slice.call(document.querySelectorAll("[data-copy]")).forEach(function (button) {
+        button.addEventListener("click", function () {
+          var prompt = document.getElementById(button.dataset.copy);
+          if (!prompt) return;
+          copyText((prompt.value !== undefined ? prompt.value : prompt.textContent).trim())
+            .then(function () { showToast("Prompt skopiowany."); })
+            .catch(function () { showToast("Nie udało się skopiować automatycznie."); });
+        });
+      });
+
+      document.getElementById("download-btn").addEventListener("click", downloadHtml);
+      document.getElementById("done-download").addEventListener("click", downloadHtml);
+      document.getElementById("print-btn").addEventListener("click", function () {
+        saveData();
+        expandTextareasForPrint();
+        window.print();
+      });
+      document.getElementById("done-close").addEventListener("click", closeCelebration);
+      celebration.addEventListener("click", function (event) {
+        if (event.target === celebration) {
+          closeCelebration();
+        }
+      });
+      document.getElementById("clear-btn").addEventListener("click", function () {
+        if (!window.confirm("Wyczyścić wszystkie odpowiedzi z tej karty?")) return;
+        fields.forEach(function (field) {
+          if (field.type === "checkbox") {
+            field.checked = false;
+          } else if (field.tagName === "SELECT") {
+            field.selectedIndex = 0;
+          } else if (field.classList.contains("prompt-editor")) {
+            field.value = field.defaultValue;
+          } else {
+            field.value = "";
+          }
+          field.dataset.touched = "false";
+          if (field.dataset.check) {
+            validateControl(field, false);
+          }
+        });
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+        } catch (error) {
+          return;
+        }
+        badgeUnlocked = false;
+        hasCelebrated = false;
+        applyBadgeState(false);
+        closeCelebration();
+        updateProgress(false);
+        showToast("Karta została wyczyszczona.");
+      });
+
+      window.addEventListener("beforeprint", expandTextareasForPrint);
+      window.addEventListener("afterprint", restoreTextareasAfterPrint);
+
+      loadData();
+      applyBadgeState(badgeUnlocked);
+      controls.forEach(function (control) {
+        validateControl(control, false);
+      });
+      updateProgress(false);
+      booting = false;
+    })();
+  </script>
+</body>
+</html>
